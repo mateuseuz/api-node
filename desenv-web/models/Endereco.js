@@ -1,4 +1,3 @@
-// models/Endereco.js
 const { Model, DataTypes } = require('sequelize');
 
 class Endereco extends Model {}
