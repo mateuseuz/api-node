@@ -21,10 +21,11 @@ module.exports = {
       },
       Numero: {
         type: Sequelize.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       Complemento: {
         type: Sequelize.STRING,
+        allowNull: true,
       },
       Bairro: {
         type: Sequelize.STRING,

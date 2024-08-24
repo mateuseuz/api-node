@@ -19,7 +19,7 @@ module.exports = (sequelize) => {
         },
         Numero: {
             type: DataTypes.INTEGER,
-            allowNull: false
+            allowNull: true
         },
         Complemento: {
             type: DataTypes.STRING,
