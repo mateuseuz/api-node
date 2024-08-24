@@ -1,0 +1,1 @@
+O método de criar um endereço pelo CEP (API da ViaCEP) não funciona na branch main, já que o retorno da API nem sempre apresenta o número dos endereços; todavia funciona na branch buscaesalva, pois nela o atributo Numero dos endereços aceita valores nulos.
