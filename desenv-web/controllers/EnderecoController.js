@@ -1,4 +1,5 @@
 const { Endereco } = require('../models');
+const https = require('https');
 
 // Criação de um novo endereço
 exports.createEndereco = async (req, res) => {
@@ -93,3 +94,65 @@ exports.deleteEndereco = async (req, res) => {
         res.status(500).json({ error: 'Erro ao deletar endereço', details: error.message });
     }
 }
+
+// Função auxiliar para fazer requisição HTTPS
+function getViaCepData(cep) {
+    return new Promise((resolve, reject) => {
+        const cleanCep = cep.replace(/\D/g, '');
+        const url = `https://viacep.com.br/ws/${cleanCep}/json/`;
+
+        https.get(url, (resp) => {
+            let data = '';
+
+            // Recebe os dados
+            resp.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            // Quando a resposta está completa
+            resp.on('end', () => {
+                try {
+                    const parsedData = JSON.parse(data);
+                    resolve(parsedData);
+                } catch (error) {
+                    reject(error);
+                }
+            });
+
+        }).on('error', (err) => {
+            reject(err);
+        });
+    });
+}
+
+// Criação de um novo endereço a partir do CEP
+exports.createEnderecoByCep = async (req, res) => {
+    const { cep } = req.params;
+
+    try {
+        // Faz a requisição para a API ViaCEP
+        const responseData = await getViaCepData(cep);
+
+        if (responseData.erro) {
+            return res.status(400).json({ error: 'CEP não encontrado' });
+        }
+
+        const { logradouro, bairro, localidade, uf, complemento } = responseData;
+
+        // Cria o novo endereço no banco de dados
+        const novoEndereco = await Endereco.create({
+            Cep: cep.replace(/\D/g, ''),
+            Logradouro: logradouro,
+            Bairro: bairro,
+            Cidade: localidade,
+            Estado: uf,
+            Complemento: complemento,
+            Numero: null,  // Pode ser nulo ou um valor padrão
+            MunicipioIBGE: null  // Pode ser nulo ou um valor padrão
+        });
+
+        res.status(201).json(novoEndereco);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao criar endereço a partir do CEP', details: error.message });
+    }
+};
