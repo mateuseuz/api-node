@@ -1,9 +1,10 @@
 const { Endereco } = require('../models');
+const axios = require('axios');
 
 // Criação de um novo endereço
 exports.createEndereco = async (req, res) => {
     try {
-        const { Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado, MunicipioIBE } = req.body;
+        const { Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado, MunicipioIBGE } = req.body;
 
         const novoEndereco = await Endereco.create({
             Cep,
@@ -13,10 +14,10 @@ exports.createEndereco = async (req, res) => {
             Bairro,
             Cidade,
             Estado,
-            MunicipioIBGE,
+            MunicipioIBGE
         });
 
-        req.status(201).json(novoEndereco);
+        res.status(201).json(novoEndereco);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao criar endereço', details: error.message });
     }
@@ -93,3 +94,35 @@ exports.deleteEndereco = async (req, res) => {
         res.status(500).json({ error: 'Erro ao deletar endereço', details: error.message });
     }
 }
+
+// Buscar e criar endereço usando ViaCEP
+exports.createEnderecoFromCep = async (req, res) => {
+    try {
+        const { Cep } = req.params;
+
+        const cep = Cep.replace(/\D/g, '');
+
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+
+        if (response.data.erro) {
+            return res.status(400).json({ error: 'CEP não encontrado' });
+        }
+
+        const { logradouro, complemento, bairro, localidade, uf, ibge } = response.data;
+
+        const novoEndereco = await Endereco.create({
+            Cep: cep,
+            Logradouro: logradouro,
+            Numero: null,
+            Complemento: complemento,
+            Bairro: bairro,
+            Cidade: localidade,
+            Estado: uf,
+            MunicipioIBGE: ibge
+        });
+
+        res.status(201).json(novoEndereco);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao criar endereço a partir do CEP', details: error.message });
+    }
+};
