@@ -3,7 +3,7 @@ const { Endereco } = require('../models');
 // Criação de um novo endereço
 exports.createEndereco = async (req, res) => {
     try {
-        const { Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado, MunicipioIBE } = req.body;
+        const { Cep, Logradouro, Numero, Complemento, Bairro, Cidade, Estado, MunicipioIBGE } = req.body;
 
         const novoEndereco = await Endereco.create({
             Cep,
@@ -13,10 +13,10 @@ exports.createEndereco = async (req, res) => {
             Bairro,
             Cidade,
             Estado,
-            MunicipioIBGE,
+            MunicipioIBGE
         });
 
-        req.status(201).json(novoEndereco);
+        res.status(201).json(novoEndereco);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao criar endereço', details: error.message });
     }

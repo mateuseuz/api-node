@@ -7,44 +7,45 @@ module.exports = (sequelize) => {
         Id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
-            autoIncrement: true,
+            autoIncrement: true
         },
         Cep: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         Logradouro: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         Numero: {
             type: DataTypes.INTEGER,
-            allowNull: false,
+            allowNull: false
         },
         Complemento: {
             type: DataTypes.STRING,
+            allowNull: true
         },
         Bairro: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         Cidade: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         Estado: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
         MunicipioIBGE: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: false
         },
     }, {
         sequelize,
         modelName: 'Endereco',
         tableName: 'enderecos',
-        timestamps: true,
+        timestamps: false,
     });
 
     return Endereco;

@@ -5,7 +5,7 @@ module.exports = {
     password: 'm4t3l5',
     database: 'api-node',
     define: {
-        timestamps: true,
+        timestamps: false,
         underscored: false
     }
 }
